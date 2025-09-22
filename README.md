@@ -9,3 +9,6 @@ Feel free to reupload onto Figura discord, credit as ```That1DireWolf``` or ```C
 #### Mantis Unit LR-Type
 - Armaments: Knife, Anti-Materiel Rifle, Small Shield  
 - Armour: Light. Reinforced shoulders.  
+#### Mantis Unit BR-Type
+- Armaments: One-Handed Sword, Pistol, Tower Shield  
+- Armour: Heavy. Reinforced lower limbs.  
