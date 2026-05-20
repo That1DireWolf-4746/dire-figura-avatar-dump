@@ -2,4 +2,4 @@
 Just a place for me to upload avatars outside of local in case anyone else wants to use 'em  
 Feel free to reupload onto Figura discord, credit as ```That1DireWolf``` or ```Kaze```
 
-## Denali - OriginsTweaks Feline
+## Notos - Wulong bohaiensis
