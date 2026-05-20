@@ -15,7 +15,6 @@ local pitch = 0
 local roll = 0
 local overrides = {}
 local playing = {}
-local tavern = false
 local cFlying, oldcFlying
 
 local flying = false
@@ -35,10 +34,6 @@ vanilla_model.ELYTRA:setVisible(false)
 --entity init event, used for when the avatar entity is loaded for the first time
 function events.entity_init()
   -- nametag functions
-  if client.getServerData()["motd"] == "KoBOBLS???" then tavern = true else tavern = false end
-  models.wulong:setVisible(tavern)
-  models.scree:setVisible(not tavern)
-  if tavern then
     setHoverTag('["",{"text":"Wulong bohaiensis","bold":true,"color":"white"},{"text":"\nDancing dragon from the \nBohai (渤海) strait","color":"white"}]')
     setNameplate("Notos")
   
@@ -77,32 +72,11 @@ function events.entity_init()
     stored["cro"] = false
     stored["gli"] = false
   end
-  if not tavern then
-    setHoverTag('["",{"text":"Oriental magpie ("},{"text":"Pica serica","italic":true},{"text":")"}]')
-    --,{"text":"\nPing me on "},{"text":"Discord","bold":true,"color":"#7289DA"},{"text":" if the\ninfinite source jar is empty"}
-    setNameplate("Scree")
-    animations.scree.peck:setLoop("ONCE")
-    animations.scree.walk:setSpeed(2)
-    animations.scree.run:setSpeed(2)
-    animations.scree.fly:setSpeed(1.5)
-    vanilla_model.LEFT_ITEM:setVisible(false)
-    models.scree.root:setParentType('WORLD')
-    models.scree.root.head:setParentType('HEAD')
-    models.scree.root.torso.torsoshiny:setPrimaryColor(1, 0.9, 0.5)
-    models.scree.root.head.RightItemPivot:setScale(0.5, 0.5, 0.5)
-    models.scree.root.torso.lwing.wingshinyl:setSecondaryRenderType('GLINT'):setSecondaryColor(0.3, 0.8, 1)
-    models.scree.root.torso.rwing.wingshinyr:setSecondaryRenderType('GLINT'):setSecondaryColor(0.3, 0.8, 1)
-    models.scree.root.torso.tail:setSecondaryRenderType('GLINT'):setSecondaryColor(0.3, 0.8, 1)
-  end
 end
 
 local attackAnimationKey = keybinds:newKeybind("Attack Animation", "key.mouse.left", false)
 function pings.attackAnim()
-  if tavern then
     animations.wulong.bite:setBlend(1):restart()
-  else
-    animations.scree.peck:restart()
-  end
 end
 attackAnimationKey.press = pings.attackAnim
 
@@ -124,7 +98,6 @@ end
 
 --tick event, called 20 times per second
 function events.tick()
-  if tavern then
     -- get vars
     rot = player:getRot()
     velocity = player:getVelocity()
@@ -226,6 +199,7 @@ function events.tick()
     -- sleeping override
   
     -- walking
+-- TODO: change tag to use minecraft:air instead of incendium tags if i can ever get it to work
     if not table.contains(raycast:block(player:getPos(), player:getPos() - vec(0, 0.1, 0), "FALLDAMAGE_RESETTING"):getTags(), "incendium:airs") and not gliding then -- if player grounded then
         regAnim("rfootback", 5, 0, true, 1)
         regAnim("lfootback", 5, 0, true, 1)
@@ -286,70 +260,12 @@ function events.tick()
     stored["cro"] = crouch
     stored["gli"] = gliding
     flycheck()
-  else
-    if flying or player:isGliding() then
-      animations.scree.walk:setPlaying(false)
-      animations.scree.run:setPlaying(false)
-      animations.scree.fall:setPlaying(false)
-      animations.scree.fly:setPlaying(true)
-      animations.scree.sneaking:setPlaying(false)
-      if player:isGliding() then
-        pitch = - player:getRot()["x"]
-      else
-        pitchbase = player:getVelocity():length()
-        if pitchbase < 0.1 then pitchbase = 0.1 end
-        pitch = 45 * (player:getVelocity()["y"] / pitchbase)
-      end
-    else
-      animations.scree.fly:setPlaying(false)
-      pitch = 0
-      if player:isCrouching() then
-        animations.scree.sneaking:play():setBlend(1)
-      else
-        animations.scree.sneaking:stop():setBlend(0)
-      end
-      if player:isMoving(true) and not player:isSprinting() and not player:isVisuallySwimming() then
-        animations.scree.walk:setPlaying(true)
-        animations.scree.run:setPlaying(false)
-      elseif player:isMoving(true) and player:isSprinting() and not player:isVisuallySwimming() then
-        animations.scree.walk:setPlaying(false)
-        animations.scree.run:setPlaying(true)
-        block = raycast:block(player:getPos(), player:getPos() - vec(0, 0.1, 0)):getTags() 
-        if table.contains(block, "minecraft:replaceable") then
-          animations.scree.run:pause()
-        else
-          animations.scree.run:play()
-        end
-      else
-        animations.scree.walk:setPlaying(false)
-        animations.scree.run:setPlaying(false)
-      end
-      if player:getVelocity()["y"] < -0.5 then
-        animations.scree.fall:setPlaying(true)
-      else
-        animations.scree.fall:setPlaying(false)
-      end
-      if player:getPose() == "SLEEPING" then
-        animations.scree.sleeping:setPlaying(true)
-      else
-        animations.scree.sleeping:setPlaying(false)
-      end
-      if player:isVisuallySwimming() then
-        animations.scree.swim:setPlaying(true)
-        pitch = - player:getRot()["x"]
-      else
-        animations.scree.swim:setPlaying(false)
-      end
-    end
-    flycheck()
-  end
 end
 --render event, called every time your avatar is rendered
 --it have two arguments, "delta" and "context"
 --"delta" is the percentage between the last and the next tick (as a decimal value, 0.0 to 1.0)
 --"context" is a string that tells from where this render event was called (the paperdoll, gui, player render, first person)
 function events.render(delta, context)
-  if tavern then
     if context == 'FIRST_PERSON' then
       models.wulong.root:setVisible(false)
       models.wulong.ROOT2:setVisible(true)
@@ -382,39 +298,6 @@ function events.render(delta, context)
     for a, w in pairs(animTargets) do
       animBlends(a, w, delta)
     end
-  else
-    if context == 'FIRST_PERSON' then
-      models.scree.root:setVisible(false)
-      vanilla_model.RIGHT_ARM:setVisible(true)
-    else
-      models.scree.root:setVisible(true)
-      vanilla_model.RIGHT_ARM:setVisible(false)
-    end
-    models.scree.root:setPos(player:getPos(delta) * 16 + vec(0, 0.02, 0)):setRot(math.lerp(models.scree.root:getRot()["x"], pitch, delta), (180 - player:getBodyYaw(delta)) % 360, math.lerp(models.scree.root:getRot()["z"], roll, delta))
-  
-    -- climbing rotation fix
-    if player:isClimbing() then
-      models.scree.root:setRot(90, (180 - player:getBodyYaw(delta)) % 360, 0)
-    end
-    models.scree.root.torso.lwing.wingshinyl:setSecondaryColor((world.getLightLevel(player:getPos()) / 15) * 0.3, (world.getLightLevel(player:getPos()) / 15) * 0.8, (world.getLightLevel(player:getPos()) / 15) * 1)
-    models.scree.root.torso.rwing.wingshinyr:setSecondaryColor((world.getLightLevel(player:getPos()) / 15) * 0.3, (world.getLightLevel(player:getPos()) / 15) * 0.8, (world.getLightLevel(player:getPos()) / 15) * 1)
-    models.scree.root.torso.tail:setSecondaryColor((world.getLightLevel(player:getPos()) / 15) * 0.3, (world.getLightLevel(player:getPos()) / 15) * 0.8, (world.getLightLevel(player:getPos()) / 15) * 1)
-    models.scree.root.torso.lwing.wingshinyl:setPrimaryColor((world.getLightLevel(player:getPos()) / 15), (world.getLightLevel(player:getPos()) / 15), (world.getLightLevel(player:getPos()) / 15))
-    models.scree.root.torso.rwing.wingshinyr:setPrimaryColor((world.getLightLevel(player:getPos()) / 15), (world.getLightLevel(player:getPos()) / 15), (world.getLightLevel(player:getPos()) / 15))
-    models.scree.root.torso.tail:setPrimaryColor((world.getLightLevel(player:getPos()) / 15), (world.getLightLevel(player:getPos()) / 15), (world.getLightLevel(player:getPos()) / 15))
-    
-    -- head fix
-    if player:isCrouching() then
-      models.scree.root.head:setPos(0, 4, 0)
-    else
-      models.scree.root.head:setPos(0, 0, 0)
-    end
-    
-    -- hide enchanter's mirror
-    if player:getHeldItem():getID() == "ars_nouveau:enchanters_mirror" then
-      vanilla_model.RIGHT_ITEM:setVisible(false)
-    end
-  end
 end
 
 function animBlends(a, w, delta)
