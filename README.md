@@ -3,4 +3,4 @@ Just a place for me to upload avatars outside of local in case anyone else wants
 Feel free to reupload onto Figura discord, credit as ```That1DireWolf``` or ```Kaze```
 
 ## Dancing Dragon - Notos
-Wulong bohaiensis with mostly procedural animations
+_Wulong bohaiensis_ with mostly procedural animations
