@@ -7,5 +7,5 @@ _Wulong bohaiensis_ with mostly procedural animations
 __HEAVY WIP__ - animations are incomplete !
 
 ## Re-07 - Seafoam
-_Re-class_ Abyssal  
+Re-class Abyssal (_KanColle_)  
 __Tech demo for simple mob AI in avatar script__
