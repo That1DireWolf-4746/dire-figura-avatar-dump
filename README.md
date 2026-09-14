@@ -8,4 +8,4 @@ __HEAVY WIP__ - animations are incomplete !
 
 ## Re-07 - Seafoam
 Re-class Abyssal (_KanColle_)  
-__Tech demo for simple mob AI in avatar script__
+__Tech demo for simple stationary mob AI in avatar script__
