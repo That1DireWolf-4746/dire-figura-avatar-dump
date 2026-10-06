@@ -6,6 +6,6 @@ Feel free to reupload onto Figura discord, credit as ```That1DireWolf``` or ```K
 _Wulong bohaiensis_ with mostly procedural animations  
 __HEAVY WIP__ - animations are incomplete !
 
-## Re-07 - Seafoam
+## Re-78 - Seafoam
 Re-class Abyssal (_KanColle_)  
-__Tech demo for simple stationary mob AI in avatar script__
+Tech demo for simple mob AI in avatar script
